@@ -1,0 +1,24 @@
+httperf --server localhost --port 8080 --uri  --rate 2000 --num-calls 5000
+httperf --client=0/1 --server=localhost --port=8080 --uri=--rate --send-buffer=4096 --recv-buffer=16384 --num-conns=1 --num-calls=5000
+Maximum connect burst length: 0
+
+Total: connections 1 requests 5000 replies 5000 test-duration 7.649 s
+
+Connection rate: 0.1 conn/s (7648.8 ms/conn, <=1 concurrent connections)
+Connection time [ms]: min 7648.8 avg 7648.8 max 7648.8 median 7648.5 stddev 0.0
+Connection time [ms]: connect 0.1
+Connection length [replies/conn]: 5000.000
+
+Request rate: 653.7 req/s (1.5 ms/req)
+Request size [B]: 67.0
+
+Reply rate [replies/s]: min 574.0 avg 574.0 max 574.0 stddev 0.0 (1 samples)
+Reply time [ms]: response 1.5 transfer 0.0
+Reply size [B]: header 136.0 content 233.0 footer 0.0 (total 369.0)
+Reply status: 1xx=0 2xx=0 3xx=0 4xx=5000 5xx=0
+
+CPU time [s]: user 5.56 system 1.80 (user 72.6% system 23.5% total 96.2%)
+Net I/O: 278.3 KB/s (2.3*10^6 bps)
+
+Errors: total 0 client-timo 0 socket-timo 0 connrefused 0 connreset 0
+Errors: fd-unavail 0 addrunavail 0 ftab-full 0 other 0

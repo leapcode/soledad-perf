@@ -20,6 +20,12 @@ performance::
   make perf-little    # runs httperf against the server, (less requests).
   make perf-easy      # runs httperf against a no-cpu load.
 
+If you want to modify the cpu load, you can pass the FIB parameter as an
+environment variable::
+  FIB=20 make inline-server
+  curl localhost:8080/
+  $ answer is >>> 6765
+
 
 Analysis
 ---------------

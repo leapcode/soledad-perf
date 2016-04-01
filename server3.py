@@ -1,23 +1,24 @@
+import os
+import sys
 from klein import run, route
 
 from twisted.internet import defer
 from twisted.internet import reactor
+from twisted.python import log
 
 from ampoule import pool
 
 import tasks
 
-import sys
-from twisted.python import log
-
 log.startLogging(sys.stdout)
+
+FIB = os.environ.get('FIB', tasks.FIB_DEFAULT)
 
 
 @route('/')
 def home(request):
-
-    d = pp.doWork(tasks.Fib)
-    d.addCallback(lambda res: str(res['fib']))
+    d = pp.doWork(tasks.Fib, n=int(FIB)) 
+    d.addCallback(lambda res: 'answer is >>> {r}\n'.format(r=res['fib']))
     return d
 
 @route('/hi')

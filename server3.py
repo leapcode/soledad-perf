@@ -32,7 +32,8 @@ pp = None
 @defer.inlineCallbacks
 def start_pool():
     global pp
-    pp = pool.ProcessPool(tasks.FibCalculator, min=1, max=2)
+    # TODO get max number of processors
+    pp = pool.ProcessPool(tasks.FibCalculator, min=1, max=4)
     print 'starting pool'
     yield pp.start()
 

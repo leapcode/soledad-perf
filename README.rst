@@ -60,7 +60,7 @@ c) **Simultaneous easy+load**: Observe how the no-cpu perf case degrades when ru
 
 To-Do
 --------------
-* [ ] make the cpu load variable (parameter to fib function: pass it as request parameter)
+* [x] make the cpu load variable (parameter to fib function: pass it as env var).
 * [ ] graph req/sec in response to variable cpu loads (parameter to fib).
 * [ ] graph response of perf-easy DURING a run of perf/perf-little. 
 * [ ] compare the rate of responsiveness against variable cpu loads.

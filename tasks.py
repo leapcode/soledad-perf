@@ -17,4 +17,4 @@ class FibCalculator(child.AMPChild):
     @Fib.responder
     def fib(self):
         print 'called responder, fib...'
-        return {"fib": fib(25)}
+        return {"fib": fib(30)}

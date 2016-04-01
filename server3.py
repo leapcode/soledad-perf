@@ -20,13 +20,18 @@ def home(request):
     d.addCallback(lambda res: str(res['fib']))
     return d
 
+@route('/hi')
+def ping(request):
+    return 'easy!'
+
+
 pp = None
 
 
 @defer.inlineCallbacks
 def start_pool():
     global pp
-    pp = pool.ProcessPool(tasks.FibCalculator, min=1, max=1)
+    pp = pool.ProcessPool(tasks.FibCalculator, min=1, max=2)
     print 'starting pool'
     yield pp.start()
 

@@ -1,16 +1,12 @@
 from klein import run, route
 from twisted.internet.threads import deferToThread
 
-def fib(n):
-    if n <= 2:
-        return 1
-    else:
-        return fib(n-1) + fib(n-2)
+from tasks import fib
 
 
 @route('/')
 def home(request):
-    d = deferToThread(fib, 25)
+    d = deferToThread(fib, 30)
     d.addCallback(lambda result: 'answer is >> %s' % result)
     return d
 

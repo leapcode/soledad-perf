@@ -6,7 +6,8 @@ from twisted.internet import defer
 UUID = 'deadbeef'
 HOST = 'http://futeisha:2323'
 # HOST = 'http://localhost:2323'
-NUM_DOCS = 20
+#NUM_DOCS = 20
+NUM_DOCS = 1
 PAYLOAD = '/tmp/payload'
 # ------------------------------------------------------
 
@@ -31,13 +32,10 @@ def onSyncDone(result):
     print "SYNC DONE!", result
 
 
-def upload_soledad_stuff():
+def upload_soledad_stuff(s):
 
     with open(PAYLOAD, 'r') as f:
         payload = f.read()
-
-    s = _get_soledad_instance_from_uuid(
-        UUID, 'pass', '/tmp/soledadsync', HOST, '', '')
 
     def do_sync(_):
         d = s.sync()
@@ -49,7 +47,7 @@ def upload_soledad_stuff():
         cd.append(s.create_doc({'payload': payload}))
     d1 = defer.gatherResults(cd)
 
-    # XXX nuking out the actual sync
-    #d1.addCallback(do_sync)
+    # XXX comment out to nuke out the actual sync
+    d1.addCallback(do_sync)
 
     return d1

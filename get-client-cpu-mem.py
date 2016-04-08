@@ -6,5 +6,4 @@ splitted = res.split()
 cpu = splitted[2]
 mem = splitted[3]
 
-print cpu
-print mem
+print cpu, mem

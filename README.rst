@@ -60,15 +60,27 @@ c) **Simultaneous easy+load**: Observe how the no-cpu perf case degrades when ru
 
 Run debug soledad server
 -------------------------
-need patched branch::
+You need this patched branch to run a local server with dummy authentication. I
+run this in a separate machine in your local network. I use vanilla couchdb server, with no authentication whatsoever. Warning: this is dangerous, it will eat your couch data so use it at your own
+risk::
+
   twistd -n web --port 2323 --wsgi leap.soledad.server.debug_local_application_do_not_use 
 
+Then you have to create a user for the sync to be done::
+
+  cd soledad/server/pkg 
+  SOLEDAD_BYPASS_AUTH=1 ./create-user-db user-deadbeef
+
+You also have to create the shared database locally::
+
+  curl -X PUT localhost:5984/shared 
+ 
 
 To-Do
 --------------
 * [x] make the cpu load variable (parameter to fib function: pass it as env var).
 * [x] graph req/sec in response to variable cpu loads (parameter to fib).
-* [ ] graph response of perf-easy DURING a run of perf/perf-little. 
+* [x] graph response of perf-easy DURING a run of perf/perf-little. 
 * [ ] compare the rate of responsiveness against variable cpu loads.
 * [ ] scale these minimalistic examples to realistic payload decryption using gnupg.
 

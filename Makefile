@@ -1,3 +1,5 @@
+# Simple PoC toys
+
 perf:
 	httperf --server localhost --port 8080 --num-calls 200 --num-conns 20 --uri /
 
@@ -16,6 +18,8 @@ thread-server:
 ampoule-server:
 	python server3.py
 
+# Actual soledad sync
+
 soledad-sync-server:
 	python server-solsync.py
 
@@ -27,6 +31,8 @@ trigger-sync:
 
 measure-series:
 	# TODO rm series.log, name it with a timestamp
+	# TODO measure, first of all, the number of seconds from the beginning!!! (right now it's biased)
+	# TODO add cpu/ram usage (ping command COULD RETURN THAT!)
 	python series-ping.py
 
 graph-series:

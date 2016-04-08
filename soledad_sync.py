@@ -48,5 +48,8 @@ def upload_soledad_stuff():
     for i in range(NUM_DOCS):
         cd.append(s.create_doc({'payload': payload}))
     d1 = defer.gatherResults(cd)
-    d1.addCallback(do_sync)
+
+    # XXX nuking out the actual sync
+    #d1.addCallback(do_sync)
+
     return d1

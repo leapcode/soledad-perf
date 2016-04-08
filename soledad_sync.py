@@ -4,9 +4,9 @@ from twisted.internet import defer
 
 # EDIT THIS TO MATCH YOUR TEST ENVIRONMENT -------------
 UUID = 'deadbeef'
-#HOST = 'http://futeisha:2323'
-HOST = 'http://localhost:2323'
-NUM_DOCS = 5
+HOST = 'http://futeisha:2323'
+# HOST = 'http://localhost:2323'
+NUM_DOCS = 20
 PAYLOAD = '/tmp/payload'
 # ------------------------------------------------------
 

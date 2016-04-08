@@ -58,10 +58,17 @@ c) **Simultaneous easy+load**: Observe how the no-cpu perf case degrades when ru
    * experiment with different parameters for the process pool.
 
 
+Run debug soledad server
+-------------------------
+need patched branch::
+  twistd -n web --port 2323 --wsgi leap.soledad.server.debug_local_application_do_not_use 
+
+
 To-Do
 --------------
 * [x] make the cpu load variable (parameter to fib function: pass it as env var).
-* [ ] graph req/sec in response to variable cpu loads (parameter to fib).
+* [x] graph req/sec in response to variable cpu loads (parameter to fib).
 * [ ] graph response of perf-easy DURING a run of perf/perf-little. 
 * [ ] compare the rate of responsiveness against variable cpu loads.
 * [ ] scale these minimalistic examples to realistic payload decryption using gnupg.
+

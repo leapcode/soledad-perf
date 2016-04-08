@@ -3,9 +3,9 @@ from leap.soledad.client.api import Soledad
 from twisted.internet import defer
 
 
-UUID = 'deadbeef1'
+UUID = 'deadbeef2'
 HOST = 'http://localhost:2323'
-NUM_DOCS = 20
+NUM_DOCS = 100
 PAYLOAD = '/tmp/payload'
 
 

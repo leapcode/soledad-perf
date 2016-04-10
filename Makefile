@@ -7,7 +7,8 @@ measure-ping:
 	httperf --server localhost --port 8080 --num-calls 5 --num-conns 20 --uri /ping
 
 trigger-sync:
-	time curl localhost:8080/start-sync
+	#time curl localhost:8080/start-sync
+	curl localhost:8080/start-sync
 
 measure-series:
 	# TODO make sure we have restarted the server, send SIGNUP ?

@@ -3,11 +3,10 @@ from leap.soledad.client.api import Soledad
 from twisted.internet import defer
 
 # EDIT THIS TO MATCH YOUR TEST ENVIRONMENT -------------
-UUID = 'deadbeef'
+UUID = 'deadbeef3'
 #HOST = 'http://futeisha:2323'
 HOST = 'http://localhost:2323'
-#NUM_DOCS = 20
-NUM_DOCS = 1
+NUM_DOCS = 100
 PAYLOAD = '/tmp/payload'
 # ------------------------------------------------------
 
@@ -32,10 +31,13 @@ def onSyncDone(result):
     print "SYNC DONE!", result
 
 
-def upload_soledad_stuff(s):
+def upload_soledad_stuff():
 
     with open(PAYLOAD, 'r') as f:
         payload = f.read()
+
+    s = _get_soledad_instance_from_uuid(
+        UUID, 'pass', '/tmp/soledadsync', HOST, '', '')
 
     def do_sync(_):
         d = s.sync()

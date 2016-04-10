@@ -6,6 +6,7 @@ import datetime
 # you have significant variability in there.
 POINTS = 200
 
+commands.getoutput('echo time req/s cpu mem > series.log')
 start = datetime.datetime.now()
 
 for i in range(POINTS):

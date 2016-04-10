@@ -11,14 +11,9 @@ start = datetime.datetime.now()
 for i in range(POINTS):
     value = commands.getoutput('python get_ping_rate.py')
     print "Step", i, "...", value
-    # TODO --- cpu/mem too brittle.
-    cpu_mem = commands.getoutput('python get-client-cpu-mem.py')
+    cpu_mem = commands.getoutput('python get_client_cpu_mem.py')
     cpu, mem = cpu_mem.split()
-    print "CPU/MEM", cpu, mem
     now = datetime.datetime.now()
     secs = (now - start).total_seconds()
-    #print "TOOK", secs, "seconds"
     commands.getoutput(
-        #'echo %s\t%s >> series.log' % (secs, value))
         'echo %s\t%s\t%s\t%s >> series.log' % (secs, value, cpu, mem))
-    #, cpu, mem))

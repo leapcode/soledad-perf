@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import os
+
 from klein import run, route
 
 import soledad_sync as sync
@@ -17,6 +19,12 @@ def home(request):
 @route('/ping')
 def ping(request):
     return 'easy!'
+
+
+@route('/pid')
+def pid(request):
+    return str(os.getpid())
+
 
 if __name__ == "__main__":
     global s

@@ -1,6 +1,8 @@
 import commands
+import urllib
+import psutil
 
-pid = commands.getoutput('ps x | grep "server-solsync" | head -n 1 | cut -d " " -f 2')
+pid = urllib.urlopen('http://localhost:8080/pid').read()
 res = commands.getoutput("ps -p " + pid + " -o \%cpu,\%mem")
 splitted = res.split()
 cpu = splitted[2]

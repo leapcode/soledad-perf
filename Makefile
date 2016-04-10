@@ -16,7 +16,7 @@ measure-series:
 	# TODO add cpu/ram usage (ping command COULD RETURN THAT!)
 	rm -f /tmp/soledadsync/*
 	rm -f series.log
-	python series-ping.py
+	python measure-perf-series.py
 
 graph-series:
 	data=series.log ./graphit

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from klein import run, route
 
 import soledad_sync as sync

@@ -3,10 +3,11 @@ from leap.soledad.client.api import Soledad
 from twisted.internet import defer
 
 # EDIT THIS TO MATCH YOUR TEST ENVIRONMENT -------------
-UUID = 'deadbeef3'
+UUID = 'deadbeef4'
 #HOST = 'http://futeisha:2323'
 HOST = 'http://localhost:2323'
-NUM_DOCS = 100
+#NUM_DOCS = 100
+NUM_DOCS = 5
 PAYLOAD = '/tmp/payload'
 # ------------------------------------------------------
 

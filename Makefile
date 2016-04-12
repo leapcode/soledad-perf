@@ -1,7 +1,14 @@
 # Actual soledad sync
 
 soledad-sync-server:
-	./server_with_soledad_syncer.py
+	twistd -n web --port 8080 --class=server_with_soledad_syncer.resource
+
+soledad-sync-server-debug:
+	#twistd --profile=stats_obj --profiler=cProfile -n web --port 8080 --class=server_with_soledad_syncer.resource
+	python -m cProfile -o sync.cprofile server_with_soledad_syncer.py 
+
+view-profile:
+	cprofilev -f sync.cprofile
 
 measure-ping:
 	httperf --server localhost --port 8080 --num-calls 5 --num-conns 20 --uri /ping

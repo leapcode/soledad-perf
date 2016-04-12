@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 
-from klein import run, route
+from klein import run, route, resource
 
 import soledad_sync as sync
 

@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*- 
 #!/usr/bin/env python
+
+
 import os
-
 from klein import run, route, resource
-
 import soledad_sync as sync
+from twisted.internet import reactor
+import datetime
 
 
 @route('/start-sync')
@@ -24,8 +26,11 @@ def pid(request):
     return str(os.getpid())
 
 
-if __name__ == "__main__":
-    #s = sync._get_soledad_instance_from_uuid(
-        #sync.UUID, 'pass', '/tmp/soledadsync', sync.HOST, '', '')
+@route('/stop')
+def stop(request):
+    reactor.callLater(1, reactor.stop)
+    return ''
 
+
+if __name__ == "__main__":
     run("localhost", 8080)

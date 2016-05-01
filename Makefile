@@ -24,6 +24,7 @@ measure-ping:
 trigger-sync:
 	#time curl localhost:8080/start-sync
 	curl localhost:8080/start-sync
+	curl localhost:8080/stop
 
 measure-series:
 	# TODO make sure we have restarted the server, send SIGNUP ?

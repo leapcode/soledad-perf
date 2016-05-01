@@ -3,13 +3,15 @@ from leap.soledad.client.api import Soledad
 from twisted.internet import defer
 
 # EDIT THIS TO MATCH YOUR TEST ENVIRONMENT -------------
-UUID = 'deadbeef4'
-#HOST = 'http://futeisha:2323'
+UUID = 'deadbeef10'
+# HOST = 'http://futeisha:2323'
 HOST = 'http://localhost:2323'
-#NUM_DOCS = 100
-NUM_DOCS = 5
+# NUM_DOCS = 100
+NUM_DOCS = 50
 PAYLOAD = '/tmp/payload'
 # ------------------------------------------------------
+
+DO_THESEUS = os.environ.get('THESEUS', False)
 
 
 def _get_soledad_instance_from_uuid(uuid, passphrase, basedir, server_url,
@@ -37,6 +39,11 @@ def upload_soledad_stuff():
     with open(PAYLOAD, 'r') as f:
         payload = f.read()
 
+    if DO_THESEUS:
+        from theseus import Tracer
+        t = Tracer()
+        t.install()
+
     s = _get_soledad_instance_from_uuid(
         UUID, 'pass', '/tmp/soledadsync', HOST, '', '')
 
@@ -45,12 +52,22 @@ def upload_soledad_stuff():
         d.addCallback(onSyncDone)
         return d
 
+    def stop_tracing(_):
+        if DO_THESEUS:
+            with open('callgrind.theseus', 'wb') as outfile:
+                t.write_data(outfile)
+            print "STOPPED TRACING, DUMPED IN CALLGRIND.THESEUS<<<<"
+
     cd = []
     for i in range(NUM_DOCS):
         cd.append(s.create_doc({'payload': payload}))
     d1 = defer.gatherResults(cd)
 
+
+
     # XXX comment out to nuke out the actual sync
-    d1.addCallback(do_sync)
+    #d1.addCallback(do_sync)
+    d1.addCallback(stop_tracing)
+
 
     return d1

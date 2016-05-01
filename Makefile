@@ -3,9 +3,17 @@
 soledad-sync-server:
 	twistd -n web --port 8080 --class=server_with_soledad_syncer.resource
 
+soledad-sync-server-lineprof:
+	kernprof -l server_with_soledad_syncer.py
+
+
 soledad-sync-server-debug:
 	#twistd --profile=stats_obj --profiler=cProfile -n web --port 8080 --class=server_with_soledad_syncer.resource
 	python -m cProfile -o sync.cprofile server_with_soledad_syncer.py 
+
+view-lineprofile:
+	python -m line_profiler server_with_soledad_syncer.py.lprof
+
 
 view-profile:
 	cprofilev -f sync.cprofile

@@ -3,11 +3,10 @@
 
 
 import os
-import datetime
 from klein import run, route, resource
-from twisted.internet import reactor
-
 import soledad_sync as sync
+from twisted.internet import reactor
+import datetime
 
 
 @route('/start-sync')

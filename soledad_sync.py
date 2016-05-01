@@ -13,6 +13,8 @@ NUM_DOCS = int(parser.get('sync', 'num_docs'))
 PAYLOAD = parser.get('sync', 'payload')
 
 
+
+
 DO_THESEUS = os.environ.get('THESEUS', False)
 
 

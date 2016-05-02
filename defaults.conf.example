@@ -1,0 +1,9 @@
+[server]
+host: http://localhost:2424
+
+[client]
+uuid: 1234567890abcdef
+
+[sync]
+num_docs: 100
+payload: /tmp/payload

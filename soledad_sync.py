@@ -1,15 +1,16 @@
 import os
+from ConfigParser import ConfigParser
 from leap.soledad.client.api import Soledad
 from twisted.internet import defer
 
-# EDIT THIS TO MATCH YOUR TEST ENVIRONMENT -------------
-UUID = '1234567890abcdef'
-#HOST = 'http://futeisha:2323'
-HOST = 'http://localhost:2424'
-NUM_DOCS = 100
-PAYLOAD = '/tmp/payload'
-# ------------------------------------------------------
 
+# get configs from file
+parser = ConfigParser()
+parser.read('defaults.conf')
+HOST = parser.get('server', 'host')
+UUID = parser.get('client', 'uuid')
+NUM_DOCS = int(parser.get('sync', 'num_docs'))
+PAYLOAD = parser.get('sync', 'payload')
 
 
 DO_THESEUS = os.environ.get('THESEUS', False)

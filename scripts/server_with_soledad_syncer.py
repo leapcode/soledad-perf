@@ -9,10 +9,15 @@ from twisted.internet import reactor
 import datetime
 
 
+@route('/create-docs')
+def create_docs(request):
+    d = sync.create_docs()
+    return d
+
+
 @route('/start-sync')
-def home(request):
-    print "GOT REQUEST FOR STARTING SYNC..."
-    d = sync.upload_soledad_stuff()
+def start_sync(request):
+    d = sync.start_sync()
     return d
 
 
@@ -34,7 +39,8 @@ def stop(request):
 @route('/stats')
 def stats(request):
     pid = os.getpid()
-    return "%d %d" % (pid, sync.phase * 50)
+    sync_phase, sync_exchange_phase = sync.stats()
+    return "%d %d %d" % (pid, sync_phase, sync_exchange_phase)
 
 
 if __name__ == "__main__":

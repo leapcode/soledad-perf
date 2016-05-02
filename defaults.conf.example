@@ -1,9 +1,16 @@
 [server]
-host: http://localhost:2424
+host = http://localhost:2424
 
 [client]
-uuid: 1234567890abcdef
+uuid = 1234567890abcdef
+basedir = /tmp/soledad_client_test
+passphrase = 12345678
 
 [sync]
-num_docs: 100
-payload: /tmp/payload
+num_docs = 100
+payload = /tmp/payload
+payload_size = 500
+auth_token = an-auth-token
+
+[test]
+stats_file = ./out/stats.json

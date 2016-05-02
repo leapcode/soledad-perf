@@ -32,8 +32,8 @@ measure-series:
 	# TODO measure, first of all, the number of seconds from the beginning!!! (right now it's biased)
 	# TODO add cpu/ram usage (ping command COULD RETURN THAT!)
 	rm -f /tmp/soledadsync/*
-	rm -f series.log
+	rm -f ./out/series.log
 	python measure-perf-series.py
 
 graph-series:
-	data=series.log ./graphit
+	data=./out/series.log ./graphit

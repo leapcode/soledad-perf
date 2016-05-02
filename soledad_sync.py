@@ -1,4 +1,5 @@
 import os
+import json
 from ConfigParser import ConfigParser
 from leap.soledad.client.api import Soledad
 from twisted.internet import defer
@@ -11,6 +12,8 @@ HOST = parser.get('server', 'host')
 UUID = parser.get('client', 'uuid')
 NUM_DOCS = int(parser.get('sync', 'num_docs'))
 PAYLOAD = parser.get('sync', 'payload')
+AUTH_TOKEN = parser.get('sync', 'auth-token')
+STATS_FILE = parser.get('test', 'stats-file')
 
 
 
@@ -19,6 +22,7 @@ DO_THESEUS = os.environ.get('THESEUS', False)
 
 
 phase = 0
+
 
 def _get_soledad_instance_from_uuid(uuid, passphrase, basedir, server_url,
                                     cert_file, token):
@@ -55,7 +59,12 @@ def upload_soledad_stuff():
         t.install()
 
     s = _get_soledad_instance_from_uuid(
-        UUID, 'pass', '/tmp/soledadsync', HOST, '', 'an-auth-token')
+        UUID, 'pass', '/tmp/soledadsync', HOST, '', AUTH_TOKEN)
+
+    def dumpStats(_):
+        stats = s.sync_stats()
+        with open(STATS_FILE, 'w') as f:
+            f.write(json.dumps(stats))
 
     def do_sync(_):
         global phase
@@ -63,6 +72,7 @@ def upload_soledad_stuff():
         phase += 1
         d = s.sync()
         d.addCallback(onSyncDone)
+        d.addCallback(dumpStats)
         return d
 
     def stop_tracing(_):

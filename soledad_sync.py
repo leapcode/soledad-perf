@@ -15,6 +15,8 @@ PAYLOAD = '/tmp/payload'
 DO_THESEUS = os.environ.get('THESEUS', False)
 
 
+phase = 0
+
 def _get_soledad_instance_from_uuid(uuid, passphrase, basedir, server_url,
                                     cert_file, token):
     secrets_path = os.path.join(basedir, '%s.secret' % uuid)
@@ -32,10 +34,14 @@ def _get_soledad_instance_from_uuid(uuid, passphrase, basedir, server_url,
 
 
 def onSyncDone(result):
+    #-------- PHASE 3: sync done.
+    global phase
+    phase += 1
     print "SYNC DONE!", result
 
 
 def upload_soledad_stuff():
+    global phase
 
     with open(PAYLOAD, 'r') as f:
         payload = f.read()
@@ -49,6 +55,9 @@ def upload_soledad_stuff():
         UUID, 'pass', '/tmp/soledadsync', HOST, '', 'an-auth-token')
 
     def do_sync(_):
+        global phase
+        #-------- PHASE 2: docs created, defer sync
+        phase += 1
         d = s.sync()
         d.addCallback(onSyncDone)
         return d
@@ -60,15 +69,14 @@ def upload_soledad_stuff():
             print "STOPPED TRACING, DUMPED IN CALLGRIND.THESEUS<<<<"
 
     cd = []
+    #-------- PHASE 1: deferring doc creation
+    phase += 1
     for i in range(NUM_DOCS):
         cd.append(s.create_doc({'payload': payload}))
     d1 = defer.gatherResults(cd)
 
-
-
     # XXX comment out to nuke out the actual sync
-    #d1.addCallback(do_sync)
+    d1.addCallback(do_sync)
     d1.addCallback(stop_tracing)
-
 
     return d1

@@ -3,10 +3,11 @@
 
 
 import os
-from klein import run, route, resource
-import soledad_sync as sync
-from twisted.internet import reactor
 import datetime
+from klein import run, route, resource
+from twisted.internet import reactor
+
+import soledad_sync as sync
 
 
 @route('/start-sync')
@@ -30,6 +31,11 @@ def pid(request):
 def stop(request):
     reactor.callLater(1, reactor.stop)
     return ''
+
+@route('/stats')
+def stats(request):
+    pid = os.getpid()
+    return "%d %d" % (pid, sync.phase * 50)
 
 
 if __name__ == "__main__":

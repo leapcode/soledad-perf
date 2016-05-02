@@ -5,5 +5,5 @@ set title filename
 set key outside
 #plot name  with linespoints notitle
 #plot filename using 1:2 with linespoints title columnheader
-plot for [col=2:4] filename using 1:col with linespoints title columnheader
+plot for [col=2:5] filename using 1:col with linespoints title columnheader
 pause -1 

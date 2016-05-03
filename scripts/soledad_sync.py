@@ -1,22 +1,30 @@
 import os
+import json
 from ConfigParser import ConfigParser
 from leap.soledad.client.api import Soledad
-from twisted.internet import defer
+from twisted.internet import defer, reactor
+from twisted.internet.task import deferLater
 
 
 # get configs from file
 parser = ConfigParser()
 parser.read('defaults.conf')
+
 HOST = parser.get('server', 'host')
+
 UUID = parser.get('client', 'uuid')
+CLIENT_BASEDIR = parser.get('client', 'basedir')
+PASSPHRASE = parser.get('client', 'passphrase')
+
 NUM_DOCS = int(parser.get('sync', 'num_docs'))
 PAYLOAD = parser.get('sync', 'payload')
+AUTH_TOKEN = parser.get('sync', 'auth_token')
+
+STATS_FILE = parser.get('test', 'stats_file')
 
 
 DO_THESEUS = os.environ.get('THESEUS', False)
 
-
-phase = 0
 
 def _get_soledad_instance_from_uuid(uuid, passphrase, basedir, server_url,
                                     cert_file, token):
@@ -34,34 +42,41 @@ def _get_soledad_instance_from_uuid(uuid, passphrase, basedir, server_url,
         syncable=True)
 
 
-def onSyncDone(result):
-    #-------- PHASE 3: sync done.
-    global phase
-    phase += 1
-    print "SYNC DONE!", result
+def _get_soledad_instance():
+    return _get_soledad_instance_from_uuid(
+        UUID, PASSPHRASE, CLIENT_BASEDIR, HOST, '', AUTH_TOKEN)
+
+s = _get_soledad_instance()
 
 
-def upload_soledad_stuff():
-    global phase
+def create_docs():
+    global s
+    # get content for docs
+    payload = 'a' * 10
+    if os.path.isfile(PAYLOAD):
+        with open(PAYLOAD, 'r') as f:
+            payload = f.read()
 
-    with open(PAYLOAD, 'r') as f:
-        payload = f.read()
+    # create docs
+    cd = []
+    for i in range(NUM_DOCS):
+        cd.append(s.create_doc({'payload': payload}))
+    d = defer.gatherResults(cd)
+
+    d.addCallback(lambda _: s.get_all_docs())
+    d.addCallback(lambda result: "%d docs created, %d docs on db" % (NUM_DOCS, result[0]))
+    #d.addCallback(lambda _: s.close())
+
+    return d
+
+
+def start_sync():
+    global s
 
     if DO_THESEUS:
         from theseus import Tracer
         t = Tracer()
         t.install()
-
-    s = _get_soledad_instance_from_uuid(
-        UUID, 'pass', '/tmp/soledadsync', HOST, '', 'an-auth-token')
-
-    def do_sync(_):
-        global phase
-        #-------- PHASE 2: docs created, defer sync
-        phase += 1
-        d = s.sync()
-        d.addCallback(onSyncDone)
-        return d
 
     def stop_tracing(_):
         if DO_THESEUS:
@@ -70,14 +85,12 @@ def upload_soledad_stuff():
             print "STOPPED TRACING, DUMPED IN CALLGRIND.THESEUS<<<<"
 
     cd = []
-    #-------- PHASE 1: deferring doc creation
-    phase += 1
-    for i in range(NUM_DOCS):
-        cd.append(s.create_doc({'payload': payload}))
-    d1 = defer.gatherResults(cd)
 
-    # XXX comment out to nuke out the actual sync
-    d1.addCallback(do_sync)
-    d1.addCallback(stop_tracing)
+    d = s.sync()
+    d.addCallback(stop_tracing)
 
-    return d1
+    return d
+
+def stats():
+    global s
+    return s.sync_stats()

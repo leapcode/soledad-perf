@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+"""
+Measure the connection rate to the dummy server running Soledad Client using
+httperf and spit it out.
+"""
+
 import commands
 import re
 

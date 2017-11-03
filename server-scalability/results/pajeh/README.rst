@@ -1,16 +1,12 @@
-Tests Scenarios and Results
-===========================
-
-This folder contains some results for Blobs Server Scalability Tests.
-
-Scenarios
----------
+Results from pajeh
+------------------
 
 The test results that are currently in this folder were run in the following
 scenario:
 
 - client download bandwidth: 150 Mb/s
 - client upload bandwidth:   150 Mb/s
+- client:                    pajeh (a developer machine)
 - server:                    giraffe.cdev.bitmask.net
 
 Three blob sizes were used (1KB, 10KB, 100KB) and the results for each size can

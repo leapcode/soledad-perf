@@ -5,7 +5,6 @@ import os
 
 from argparse import ArgumentParser
 from sys import stdout
-
 from twisted.internet import reactor
 from twisted.python import log
 from twisted.web.resource import Resource
@@ -40,8 +39,23 @@ class DummyResource(Resource):
         return ''
 
 
+class RootResource(Resource):
+
+    def __init__(self, port, *args, **kwargs):
+        Resource.__init__(self, *args, **kwargs)
+        self.prefix = str(port) + "-"
+        self.blob_id = 0
+
+    def getChildWithDefault(self, path, request):
+        if path == 'blobs' and len(request.postpath) == 2:
+            blob_id = "{}{}".format(self.prefix, str(self.blob_id))
+            request.postpath[1] = blob_id
+            self.blob_id += 1
+        return Resource.getChildWithDefault(self, path, request)
+
+
 def start_server(dir, port):
-    resource = Resource()
+    resource = RootResource(port)
     resource.putChild("", DummyResource())
     resource.putChild("blobs", BlobsResource("filesystem", dir))
     site = Site(resource)

@@ -11,8 +11,8 @@ from uuid import uuid4
 
 
 BASE_URI = 'http://127.0.0.1:8000/'
-BLOBS_URI = urljoin(BASE_URI,
-                    'blobs/{}/'.format(time.strftime('%Y-%m-%d_%H-%M-%s')))
+BLOBS_URI = urljoin(BASE_URI, 'blobs/user/')
+#                    'blobs/{}/'.format(time.strftime('%Y-%m-%d_%H-%M-%s')))
 CONCURRENT = 10
 
 
@@ -45,9 +45,9 @@ def parse_args():
     return args
 
 
-def _finished(_, start):
+def _finished(_, start, amount):
     end = time.time()
-    print(end - start)
+    print(float(amount) / (end - start))
     reactor.stop()
 
 
@@ -56,12 +56,12 @@ def _error(failure):
     reactor.stop()
 
 
-def main(generator):
+def main(generator, amount):
     cooperator = task.Cooperator()
     cooptask = cooperator.cooperate(generator)
     start = time.time()
     d = cooptask.whenDone()
-    d.addCallback(_finished, start)
+    d.addCallback(_finished, start, amount)
     d.addErrback(_error)
     return d
 
@@ -86,8 +86,6 @@ def requests_generator(args):
     deferreds = []
     for i in xrange(args.amount):
         if args.baseline:
-            import pdb
-            pdb.set_trace()
             d = _client.get(BASE_URI)
 
         elif args.list:
@@ -116,5 +114,5 @@ def requests_generator(args):
 if __name__ == "__main__":
     args = parse_args()
     generator = requests_generator(args)
-    d = main(generator)
+    d = main(generator, args.amount)
     reactor.run()

@@ -45,42 +45,120 @@ start_multiproc() {
 }
 
 
-get_best() {
-  statement=$*
-  result=$(python -m timeit -n 1 -r 5 -s "import os" "os.system('${statement}')")
-  best=$(echo $result | sed -e s/.\*best\ of\ 5:\ // -e s/per\ loop//)
-  echo $best
-}
-
-
-get_mean() {
-  statement=$*
-  python -c "import timeit; t = timeit.timeit('import os; os.system(\'./${statement} > /dev/null\');', number=5); print t / 5"
-}
-
-
-request() {
+ab-get() {
   action=${1}
   procs=${2}
   amount=${3}
   size=${4}
-  best=$(get_mean ./request.py --${action} ${amount} ${size})
-  echo "${procs} ${action} ${amount} ${size} ${best}"
+  statement="make stress-get UUID=blob"
+  python -c "import timeit; t = timeit.timeit('import os; os.system(\'${statement} > /dev/null\');', number=5); print t / 5"
+  echo "${procs} ${action} ${amount} ${size} ${time}"
+}
+
+
+ab-baseline() {
+  make ab-get URI=http://127.0.0.1:8000/
+}
+
+
+ab-put() {
+  port=${1}
+  if [ -z "${port}" ]; then port=8000; fi
+  make ab-put URI=http://127.0.0.1:${port}/blobs/user/blob_id
+}
+
+
+ab-get() {
+  make ab-get URI=http://127.0.0.1:8000/blobs/user/blob_id
+}
+
+
+ab-list() {
+  make ab-get URI=http://127.0.0.1:8000/blobs/user/
+}
+
+
+ab-flag() {
+  make ab-flag URI=http://127.0.0.1:8000/blobs/user/blob_id
+}
+
+
+ab-delete() {
+  make ab-delete URI=http://127.0.0.1:8000/blobs/user/blob_id
 }
 
 
 run_test() {
-  for procs in 1 2 4 8; do
+  echo "" > results.txt
+  #for procs in 1 2 4 8; do
+  for procs in 1 2 3 4; do
+    echo ":: Running tests for ${procs} proceesses..."
+
+    # setup
+    make clean
+    make data SIZE=56
     start_multiproc ${procs}
-    for action in baseline list put get flag delete; do
-      #for amountsize in "10 1000" "100 100" "1000 10"; do
-      for amountsize in "1000 10"; do
-        rm -rf /tmp/blobs/*
-        request ${action} ${procs} ${amountsize} >> results.txt
-      done
+    sleep 2
+
+    echo ":::: Running baseline test..."
+    result="${procs} baseline $(ab-baseline)"
+    echo ${result}
+    echo ${result} >> results.txt
+    sleep 2
+    #read temp
+
+    echo ":::: Running put test..."
+    result="${procs} put $(ab-put)"
+    echo ${result}
+    echo ${result} >> results.txt
+    sleep 2
+    #read temp
+
+    # setup tests that depend on existence of blobs
+    kill_multiproc
+    make clean
+    make kill-haproxy
+    for port in 8001 8002 8003 8004; do
+      echo ":::::: creating blobs prefixed with ${port}-..."
+      make server PORT=${port} > /dev/null &!
+      sleep 1
+      ab-put ${port}
+      #read temp
+      make kill-server
     done
+    sleep 2
+
+    echo ":::: Running list test..."
+    start_multiproc ${procs}
+    result="${procs} list $(ab-list)"
+    echo ${result}
+    echo ${result} >> results.txt
+    sleep 2
+
+    echo ":::: Running flag test..."
+    make flag
+    result="${procs} flag $(ab-flag)"
+    echo ${result}
+    echo ${result} >> results.txt
+    sleep 2
+
+    echo ":::: Running get test..."
+    kill_multiproc
+    start_multiproc ${procs}
+    result="${procs} get $(ab-get)"
+    echo ${result}
+    echo ${result} >> results.txt
+    sleep 2
+
+    echo ":::: Running delete test..."
+    kill_multiproc
+    start_multiproc ${procs}
+    result="${procs} delete $(ab-delete)"
+    echo ${result}
+    echo ${result} >> results.txt
     kill_multiproc
   done
 }
+
 
 run_test

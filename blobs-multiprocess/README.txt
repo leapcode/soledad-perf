@@ -38,7 +38,8 @@ Description of files
 ├── haproxy               - A directory with haproxy config.
 ├── makefile              - Rules for starting up pieces of the test.
 ├── multiproc.py          - A service that spawns multiple blobs servers.
-├── README                - This file.
+├── proxies               - Study with different possibilities of proxy.
+├── README.txt            - This file.
 ├── request.py            - A stressing blobs client.
 ├── results               - A directory with some results stored.
 ├── results.txt           - The file that ./graph.py reads from.
